@@ -3,12 +3,15 @@
 Plugin Name: CF Context 
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.1
+Version: 1.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
 
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
+
+// Constants
+	define('CFCN_VERSION', '1.2');
 
 if (!defined('PLUGINDIR')) {
 	define('PLUGINDIR','wp-content/plugins');
@@ -80,10 +83,7 @@ function cfcn_add_author($context) {
 function cfcn_build_context($params) {
 	$contexts = cfcn_get_context();
 	
-	$external_context = apply_filters('cfcn_build_context', $contexts);
-	
-	$contexts = $external_context['contexts'];
-	$params .= $external_context['params'];
+	$contexts = apply_filters('cfcn_build_context', $contexts);
 	
 	if (is_array($contexts) && !empty($contexts)) {
 		foreach ($contexts as $key => $value) {
