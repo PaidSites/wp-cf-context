@@ -77,14 +77,45 @@ function cfcn_add_author($context) {
 	return $context;
 }
 
-function cfcn_display() {
-	$context = cfcn_get_context();
+function cfcn_build_context($params) {
+	$contexts = cfcn_get_context();
 	
+	$external_context = apply_filters('cfcn_build_context', $contexts);
+	
+	$contexts = $external_context['contexts'];
+	$params .= $external_context['params'];
+	
+	if (is_array($contexts) && !empty($contexts)) {
+		foreach ($contexts as $key => $value) {
+			if (is_array($value) && !empty($value)) {
+				$params .= '&'.urlencode($key).'=';
+				$i = 1;
+				foreach ($value as $key2 => $item) {
+					$params .= urlencode($item);
+					if ($i < count($value)) {
+						$params .= ',';
+					}
+					$i++;
+				}
+			}
+			else {
+				$params .= '&'.urlencode($key).'='.urlencode($value);
+			}
+		}	
+	}
+	
+	return $params;
+}
+add_filter('cfox_params', 'cfcn_build_context');
+
+function cfcn_display() {
 	echo '
-	<div class="cfcn_context_addition" style="padding: 15px;">
+	<div class="cfcn_context_addition" style="padding: 15px; background-color:#FFFFFF;">
 		<h1>CF Context</h1>
 		<p>The following items have been added by the CF Context plugin for addition for this page</p>
 	';
+	
+	$context = apply_filters('cfcn_display', cfcn_get_context());
 	if (is_array($context) && !empty($context)) {
 		foreach ($context as $key => $value) {
 			if (is_array($value) && !empty($value)) {
@@ -97,21 +128,16 @@ function cfcn_display() {
 					}
 					$i++;
 				}
-				echo '
-				<p>
-					Name: '.$key.'<br />
-					Value: '.$values.'<br />
-				</p>
-				';
 			}
 			else {
-				echo '
-				<p>
-					Name: '.$key.'<br />
-					Value: '.$value.'<br />
-				</p>
-				';
+				$values = $value;
 			}
+			echo '
+			<p>
+				Name: '.$key.'<br />
+				Value: '.$values.'<br />
+			</p>
+			';
 		}
 	}
 	echo '
