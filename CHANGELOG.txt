@@ -1,5 +1,9 @@
 # CF Context Changelog
 
+## 1.2.1
+
+- Adding README
+
 ## 1.2
 
 - Adding the ability for the plugin to filter in parameters to the CF OpenX Handler plugin
