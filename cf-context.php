@@ -3,7 +3,7 @@
 Plugin Name: CF Context 
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.2
+Version: 1.2.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -163,5 +163,33 @@ function cfcn_cfox_options_help($html) {
 	return $html;
 }
 add_filter('cfox_admin_page', 'cfcn_cfox_options_help');
+
+// README HANDLING
+add_action('admin_init','cfcn_add_readme');
+
+/**
+ * Enqueue the readme function
+ */
+function cfcn_add_readme() {
+	if(function_exists('cfreadme_enqueue')) {
+		cfreadme_enqueue('cf-context','cfcn_readme');
+	}
+}
+
+/**
+ * return the contents of the links readme file
+ * replace the image urls with full paths to this plugin install
+ *
+ * @return string
+ */
+function cfcn_readme() {
+	$file = realpath(dirname(__FILE__)).'/readme/readme.txt';
+	if(is_file($file) && is_readable($file)) {
+		$markdown = file_get_contents($file);
+		$markdown = preg_replace('|!\[(.*?)\]\((.*?)\)|','![$1]('.WP_PLUGIN_URL.'/cf-context/readme/$2)',$markdown);
+		return $markdown;
+	}
+	return null;
+}
 
 ?>
