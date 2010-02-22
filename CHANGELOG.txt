@@ -1,5 +1,9 @@
 # CF Context Changelog
 
+## 1.2.2
+
+- Adding the README inclusion via the CF Readme Plugin
+
 ## 1.2.1
 
 - Adding README
