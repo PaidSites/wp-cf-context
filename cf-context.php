@@ -11,11 +11,8 @@ Author URI: http://crowdfavorite.com
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
 // Constants
-	define('CFCN_VERSION', '1.2');
+	define('CFCN_VERSION', '1.3');
 
-if (!defined('PLUGINDIR')) {
-	define('PLUGINDIR','wp-content/plugins');
-}
 
 function cfcn_get_context() {
 	$context = array();
@@ -24,49 +21,20 @@ function cfcn_get_context() {
 }
 
 // Add the local function filters
-add_filter('cfcn_context', 'cfcn_add_categories', 10);
-add_filter('cfcn_context', 'cfcn_add_tags', 10);
 add_filter('cfcn_context', 'cfcn_add_author', 10);
+add_filter('cfcn_context', 'cfcn_add_taxonomies', 10);
 
-function cfcn_add_categories($context) {
+function cfcn_add_taxonomies($context) {
 	global $post;
-	if ($post->ID <= 0) { return $context; }
-	
-	$categories = wp_get_post_categories($post->ID);
-	
-	if (is_array($categories) && !empty($categories)) {
-		foreach ($categories as $category) {
-			$cat = get_category($category);
-			if (count($categories) > 1) {
-				$context['category'][] = $cat->slug;
-			}
-			else {
-				$context['category'] = $cat->slug;
+	$taxonomy_types = get_object_taxonomies($post);
+	foreach ($taxonomy_types as $tax_type) {
+		$taxonomy_objects = wp_get_post_terms($post->ID, $tax_type);
+		if (!empty($taxonomy_objects)) {
+			foreach ($taxonomy_objects as $object) {
+				$context[$object->taxonomy][] = $object->name;
 			}
 		}
 	}
-	
-	return $context;
-}
-
-function cfcn_add_tags($context) {
-	global $post;
-	if ($post->ID <= 0) { return $context; }
-	
-	$tags = wp_get_post_tags($post->ID);
-	
-	if (is_array($tags) && !empty($tags)) {
-		foreach ($tags as $tag_id) {
-			$tag = get_tag($tag_id);
-			if (count($tags) > 1) {
-				$context['tag'][] = $tag->slug;
-			}
-			else {
-				$context['tag'] = $tag->slug;
-			}
-		}
-	}
-	
 	return $context;
 }
 
@@ -110,13 +78,14 @@ add_filter('cfox_params', 'cfcn_build_context');
 
 function cfcn_display() {
 	echo '
-	<div class="cfcn_context_addition" style="padding: 15px; background-color:#FFFFFF;">
+	<div class="cfcn_context_addition" style="padding: 15px; color: black; background-color:#FFFFFF;">
 		<h1>CF Context</h1>
 		<p>The following items have been added by the CF Context plugin for addition for this page</p>
 	';
 	
 	$context = apply_filters('cfcn_display', cfcn_get_context());
 	if (is_array($context) && !empty($context)) {
+		echo '<ul>';
 		foreach ($context as $key => $value) {
 			if (is_array($value) && !empty($value)) {
 				$values = '';
@@ -133,12 +102,13 @@ function cfcn_display() {
 				$values = $value;
 			}
 			echo '
-			<p>
-				Name: '.$key.'<br />
-				Value: '.$values.'<br />
-			</p>
+			<li>
+				key: '.$key.'<br />
+				value: '.$values.'<br />
+			</li>
 			';
 		}
+		echo '</ul>';
 	}
 	echo '
 	</div>

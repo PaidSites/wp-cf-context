@@ -1,5 +1,9 @@
 # CF Context Changelog
 
+## 1.3
+
+- Updated to support custom taxonomies
+
 ## 1.2.2
 
 - Adding the README inclusion via the CF Readme Plugin
