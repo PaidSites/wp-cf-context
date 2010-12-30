@@ -21,8 +21,14 @@ function cfcn_get_context() {
 }
 
 // Add the local function filters
+add_filter('cfcn_context', 'cfcn_add_post_type', 10);
 add_filter('cfcn_context', 'cfcn_add_author', 10);
 add_filter('cfcn_context', 'cfcn_add_taxonomies', 10);
+
+function cfcn_add_post_type($context) {
+	global $post;
+	return array_merge($context, array('post_type' => $post->post_type));
+}
 
 function cfcn_add_taxonomies($context) {
 	global $post;
