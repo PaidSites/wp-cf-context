@@ -3,7 +3,7 @@
 Plugin Name: CF Context 
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.3
+Version: 1.3.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -11,7 +11,7 @@ Author URI: http://crowdfavorite.com
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
 // Constants
-	define('CFCN_VERSION', '1.3');
+	define('CFCN_VERSION', '1.3.1');
 
 
 function cfcn_get_context() {
@@ -22,12 +22,18 @@ function cfcn_get_context() {
 
 // Add the local function filters
 add_filter('cfcn_context', 'cfcn_add_post_type', 10);
+add_filter('cfcn_context', 'cfcn_add_post_name', 10);
 add_filter('cfcn_context', 'cfcn_add_author', 10);
 add_filter('cfcn_context', 'cfcn_add_taxonomies', 10);
 
 function cfcn_add_post_type($context) {
 	global $post;
 	return array_merge($context, array('post_type' => $post->post_type));
+}
+
+function cfcn_add_post_name($context) {
+	global $post;
+	return array_merge($context, array('post_name' => $post->post_name), array('post_slug' => $post->post_name));
 }
 
 function cfcn_add_taxonomies($context) {
@@ -120,7 +126,7 @@ function cfcn_display() {
 	</div>
 	';
 }
-if (isset($_GET['cfcn_display']) && $_GET['cfcn_display'] == 'true') {
+if (!empty($_GET['cfcn_display']) && $_GET['cfcn_display'] == 'true') {
 	add_action('wp_footer','cfcn_display');
 }
 
