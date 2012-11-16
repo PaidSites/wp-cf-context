@@ -33,7 +33,7 @@ function cfcn_add_post_type($context) {
 
 function cfcn_add_post_name($context) {
 	global $post;
-	return array_merge($context, array('post_name' => $post->post_name), array('post_slug' => $post->post_name));
+	return array_merge($context, array('post_name' => $post->post_name), array('post_slug' => $post->post_name), array('permalink' => get_permalink($post->ID)));
 }
 
 function cfcn_add_taxonomies($context) {
