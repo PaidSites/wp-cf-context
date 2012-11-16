@@ -3,7 +3,7 @@
 Plugin Name: CF Context 
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.3.1
+Version: 1.3.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
