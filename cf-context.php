@@ -3,7 +3,7 @@
 Plugin Name: CF Context 
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.3.1
+Version: 1.3.2
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -33,7 +33,7 @@ function cfcn_add_post_type($context) {
 
 function cfcn_add_post_name($context) {
 	global $post;
-	return array_merge($context, array('post_name' => $post->post_name), array('post_slug' => $post->post_name));
+	return array_merge($context, array('post_name' => $post->post_name), array('post_slug' => $post->post_name), array('permalink' => get_permalink($post->ID)));
 }
 
 function cfcn_add_taxonomies($context) {
