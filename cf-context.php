@@ -93,7 +93,10 @@ function afps_cf_context_post_updated($context) {
 	foreach ($wp_query as $key => $item) {
 		if ($key == 'post') {
 			$pubCode_ids = agora()->authentication->get_post_authcodes();
-			$pubCodes = agora()->authentication->get_authcodes_by_name($pubCode_ids);
+			if (!empty($pubCode_ids)) {
+				$pubCodes = agora()->authentication->get_authcodes_by_name($pubCode_ids);
+			}
+			
 			if (is_array($pubCodes) && !empty($pubCodes)) {
 				foreach ($pubCodes as $pubCode) {
 					if (!in_array($pubCode->name,$context['pubCodes'])) {
@@ -105,7 +108,9 @@ function afps_cf_context_post_updated($context) {
 		if ($key == 'posts' && is_array($item) && !empty($item)) {
 			foreach ($item as $post) {
 				$pubCode_ids = agora()->authentication->get_post_authcodes();
-				$pubCodes = agora()->authentication->get_authcodes_by_name($pubCode_ids);
+				if (!empty($pubCode_ids)) {
+					$pubCodes = agora()->authentication->get_authcodes_by_name($pubCode_ids);
+				}
 				if (is_array($pubCodes) && !empty($pubCodes)) {
 					foreach ($pubCodes as $pubCode) {
 						if (!in_array($pubCode->name,$context['pubCodes'])) {
