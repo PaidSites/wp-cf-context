@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: CF Context 
+Plugin Name: CF Context 2015
 Plugin URI: http://crowdfavorite.com 
 Description: Page/Post Context plugin 
-Version: 1.3.2
+Version: 1.3.3
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com
 */
@@ -11,7 +11,7 @@ Author URI: http://crowdfavorite.com
 // ini_set('display_errors', '1'); ini_set('error_reporting', E_ALL);
 
 // Constants
-	define('CFCN_VERSION', '1.3.1');
+define('CFCN_VERSION', '1.3.1');
 
 
 function cfcn_get_context() {
