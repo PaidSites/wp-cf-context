@@ -29,7 +29,7 @@ add_filter('cfcn_context', 'cfcn_add_taxonomies', 10);
 //Check for the agora_authentication_plugin class. If it exists, add auth_context functions to cfcn_context filter
 if (class_exists('agora_authentication_plugin')) {
 	add_filter('cfcn_context', 'afps_cf_context_user_updated', 10);
-	add_filter('cfcn_context', 'afps_cf_context_post_updated', 10);
+	// add_filter('cfcn_context', 'afps_cf_context_post_updated', 10);
 }
 function cfcn_add_post_type($context) {
 	global $post;
