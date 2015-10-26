@@ -74,7 +74,7 @@ function afps_cf_context_user_updated($context) {
 	if (is_array($agora_user_subscriptions) && !empty($agora_user_subscriptions)) {
 		foreach ($agora_user_subscriptions as $key => $subscription) {
 			$key = $subscription->pubcode;
-			$context['afps_user_subscriptions'][] = $key[];
+			$context['afps_user_subscriptions'][] = $key;
 			$context['afps_user_subscriptions-PubCode-'.$key] = $subscription->pubcode;
 			$context['afps_user_subscriptions-CircStatus-'.$key] = $subscription->status;
 		}
