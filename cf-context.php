@@ -26,6 +26,11 @@ add_filter('cfcn_context', 'cfcn_add_post_name', 10);
 add_filter('cfcn_context', 'cfcn_add_author', 10);
 add_filter('cfcn_context', 'cfcn_add_taxonomies', 10);
 
+//Check for the agora_authentication_plugin class. If it exists, add auth_context functions to cfcn_context filter
+if (class_exists('agora_authentication_plugin')) {
+	add_filter('cfcn_context', 'afps_cf_context_user_updated', 10);
+	add_filter('cfcn_context', 'afps_cf_context_post_updated', 10);
+}
 function cfcn_add_post_type($context) {
 	global $post;
 	return array_merge($context, array('post_type' => $post->post_type));
@@ -57,6 +62,64 @@ function cfcn_add_author($context) {
 	
 	$context['author'] = $authordata->user_login;
 	
+	return $context;
+}
+
+// For Integration into the CF Context Plugin
+// New version of the CF Context plugin with filters
+function afps_cf_context_user_updated($context) {
+	$agora_user_subscriptions = agora()->user->get_subscriptions();
+
+	// Add the subscription data
+	if (is_array($agora_user_subscriptions) && !empty($agora_user_subscriptions)) {
+		foreach ($agora_user_subscriptions as $key => $subscription) {
+			$key = $subscription->pubcode;
+			$context['afps_user_subscriptions'][] = $key[];
+			$context['afps_user_subscriptions-PubCode-'.$key] = $subscription->pubcode;
+			$context['afps_user_subscriptions-CircStatus-'.$key] = $subscription->status;
+		}
+	}
+
+	return $context;
+}
+
+function afps_cf_context_post_updated($context) {
+	global $wp_query;
+
+	if (!is_array($context['pubCodes'])) {
+		$context['pubCodes'] = array();
+	}
+
+	foreach ($wp_query as $key => $item) {
+		if ($key == 'post') {
+			$pubCode_ids = agora()->authentication->get_post_authcodes($item->ID);
+			$pubCodes = get_authcodes_by_name($pubCode_ids);
+			if (is_array($pubCodes) && !empty($pubCodes)) {
+				foreach ($pubCodes as $pubCode) {
+					if (!in_array($pubCode->name,$context['pubCodes'])) {
+						$context['pubCodes'][] = $pubCode->name;
+					}
+				}
+			}
+		}
+		if ($key == 'posts' && is_array($item) && !empty($item)) {
+			foreach ($item as $post) {
+				$pubCode_ids = agora()->authentication->get_post_authcodes($item->ID);
+				$pubCodes = get_authcodes_by_name($pubCode_ids);
+				if (is_array($pubCodes) && !empty($pubCodes)) {
+					foreach ($pubCodes as $pubCode) {
+						if (!in_array($pubCode->name,$context['pubCodes'])) {
+							$context['pubCodes'][] = $pubCode->name;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (empty($context['pubCodes'])) {
+		unset($context['pubCodes']);
+	}
 	return $context;
 }
 
